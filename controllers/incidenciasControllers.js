@@ -57,3 +57,16 @@ module.exports = {
   obtenerEstadisticas,
   clasificarIncidencia
 };
+
+// 3)busca una incidencia especifica por su id
+function buscarPorId(req, res) {
+  const id = parseInt(req.params.id); // los params llegan como texto, por eso el parseInt
+  const incidencia = db.incidencias.find(inc => inc.id === id);
+
+  if (!incidencia) {
+    return res.status(404).json({ mensaje: 'Incidencia no encontrada' });
+  }
+
+  res.json(incidencia);
+}
+
