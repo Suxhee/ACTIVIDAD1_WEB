@@ -70,3 +70,27 @@ function buscarPorId(req, res) {
   res.json(incidencia);
 }
 
+// 4)cambia el estado de una incidencia (esta parte pide switch si o si)
+function cambiarEstado(req, res) {
+  const id = parseInt(req.params.id);
+  const { estado } = req.body;
+  const incidencia = db.incidencias.find(inc => inc.id === id);
+
+  if (!incidencia) {
+    return res.status(404).json({ mensaje: 'Incidencia no encontrada' });
+  }
+
+  // el switch valida que el estado sea uno de los 4 permitidos
+  switch (estado) {
+    case 'Pendiente':
+    case 'En Proceso':
+    case 'Resuelta':
+    case 'Cancelada':
+      incidencia.estado = estado;
+      res.json({ mensaje: Estado actualizado a ${estado} });
+      break;
+    default:
+      res.status(400).json({ mensaje: 'Estado no válido' });
+  }
+}
+
