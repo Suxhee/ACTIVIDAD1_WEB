@@ -1,5 +1,5 @@
 const db = require('../data/incidencias'); 
-const {esTextoValido, prioridadValida} = require('../utils/helpers'); //Importando funciones auxiliares
+const {esTextoValido, prioridadValida, normalizarPrioridad} = require('../utils/helpers'); //Importando funciones auxiliares
 
 // 1. Crear incidencia
 function crearIncidencia(req, res) {
@@ -28,7 +28,7 @@ function crearIncidencia(req, res) {
     empleado: empleado.trim(), //Uso de trim() para limpiar espacios a ambos lados
     area: area.trim(),
     descripcion: descripcion.trim(),
-    prioridad: normalizarPrioridad(prioridad), // guardamos siempre con el mismo formato (Alta/Media/Baja)
+   prioridad: normalizarPrioridad(prioridad), // guardamos siempre con el mismo formato (Alta/Media/Baja)
     estado: 'Pendiente' //Estado por defecto
   };
 
