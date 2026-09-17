@@ -1,5 +1,5 @@
 const db = require('../data/incidencias'); 
-const { esTextoValido, prioridadValida } = require('../utils/helpers'); //Importando funciones auxiliares
+const {esTextoValido, prioridadValida} = require('../utils/helpers'); //Importando funciones auxiliares
 
 // 1. Crear incidencia
 function crearIncidencia(req, res) {
@@ -28,7 +28,7 @@ function crearIncidencia(req, res) {
     empleado: empleado.trim(), //Uso de trim() para limpiar espacios a ambos lados
     area: area.trim(),
     descripcion: descripcion.trim(),
-    prioridad,
+    prioridad: normalizarPrioridad(prioridad), // guardamos siempre con el mismo formato (Alta/Media/Baja)
     estado: 'Pendiente' //Estado por defecto
   };
 
@@ -103,6 +103,34 @@ function obtenerEstadisticas(req, res) {
 
   res.json(estadisticas);
 }
+
+// 7. Traduce la prioridad a una clasificacion
+function clasificarIncidencia(req, res) {
+  const id = parseInt(req.params.id);
+  const incidencia = db.incidencias.find(inc => inc.id === id); //busca el id
+
+  if (!incidencia) {
+    return res.status(404).json({ mensaje: 'Incidencia no encontrada' });
+  }
+
+  let clasificacion; // se utiliza let porque se va a reasignar el valor de la variable dependiendo del caso
+  switch (incidencia.prioridad) { // el switch obligatorio
+    case 'Alta':
+      clasificacion = 'Crítica';
+      break;
+    case 'Media':
+      clasificacion = 'Importante';
+      break;
+    case 'Baja':
+      clasificacion = 'Normal';
+      break;
+    default:
+      clasificacion = 'Sin clasificar';
+  }
+
+  res.json({ id: incidencia.id, clasificacion });
+}
+
 
 
 //Exportacion de funciones
